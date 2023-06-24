@@ -1,39 +1,37 @@
+import openai 
 import streamlit as st
+
+# pip install streamlit-chat  
 from streamlit_chat import message
-from bardapi import Bard
-import os
-import requests
-os.environ['_BARD_API_KEY'] = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
-# token='xxxxxxx'
+openai.api_key = st.secrets["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"]
 
-session = requests.Session()
-session.headers = {
-            "Host": "bard.google.com",
-            "X-Same-Domain": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Origin": "https://bard.google.com",
-            "Referer": "https://bard.google.com/",
-        }
-session.cookies.set("__Secure-1PSID", os.getenv("_BARD_API_KEY")) 
-# session.cookies.set("__Secure-1PSID", token) 
-
-
-#functions to generate output XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.
 def generate_response(prompt):
-    token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
-    bard = Bard(token=token, session=session, timeout=30)
-    response = bard.get_answer(prompt)['content']
-    return response
+    completions = openai.Completion.create(
+        engine = "text-davinci-003",
+        prompt = prompt,
+        max_tokens = 1024,
+        n = 1,
+        stop = None,
+        temperature=0.5,
+    )
+    message = completions.choices[0].text
+    return message 
 
 
+#Creating the chatbot interface
+st.title("chatBot : Streamlit + openAI")
+
+# Storing the chat
+if 'generated' not in st.session_state:
+    st.session_state['generated'] = []
+
+if 'past' not in st.session_state:
+    st.session_state['past'] = []
+
+# We will get the user's input by calling the get_text function
 def get_text():
-    input_text = st.text_input("Mitadru's Bot: ", "", key='input')
+    input_text = st.text_input("You: ","Hello, how are you?", key="input")
     return input_text
-
-#title
-st.title("SonicPulse Bot")
-#data-testid="stAppViewContainer"
 changes = '''
 <style>
 [data-testid="stAppViewContainer"]
@@ -43,23 +41,16 @@ background-size:cover;
 }
 </style>
 '''
-st.markdown(changes,unsafe_allow_html=True)
-print(st.session_state)
-if 'generate' not in st.session_state:
-    st.session_state['generate'] = []
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
-#accepting user input
 user_input = get_text()
-if user_input:
-    print(user_input)
-    response = generate_response(user_input)
-    print(response)
-    st.session_state.past.append(user_input)
-    st.session_state.generate.append(response)
 
-if st.session_state['generate']:
-    for i in range(len(st.session_state['generate'])-1,-1,-1):
-        message(st.session_state['past'][i], key="user_" + str(i), is_user=True)
-        message(st.session_state['generate'][i],key=str(i))
-        # message(st.session_state['past'][i], key="user_"+str(i),is_user=True)
+if user_input:
+    output = generate_response(user_input)
+    # store the output 
+    st.session_state.past.append(user_input)
+    st.session_state.generated.append(output)
+
+if st.session_state['generated']:
+    
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        message(st.session_state["generated"][i], key=str(i))
+        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
