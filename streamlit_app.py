@@ -1,37 +1,23 @@
-import openai 
 import streamlit as st
-
-# pip install streamlit-chat  
 from streamlit_chat import message
-openai.api_key = "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"
+from bardapi import Bard
 
+
+#functions to generate output XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.
 def generate_response(prompt):
-    completions = openai.Completion.create(
-        engine = "text-davinci-003",
-        prompt = prompt,
-        max_tokens = 1024,
-        n = 1,
-        stop = None,
-        temperature=0.5,
-    )
-    message = completions.choices[0].text
-    return message 
+    token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
+    bard = Bard(token=token)
+    response = bard.get_answer(prompt)['content']
+    return response
 
 
-#Creating the chatbot interface
-st.title("chatBot : Streamlit + openAI")
-
-# Storing the chat
-if 'generated' not in st.session_state:
-    st.session_state['generated'] = []
-
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
-
-# We will get the user's input by calling the get_text function
 def get_text():
-    input_text = st.text_input("You: ","Hello, how are you?", key="input")
+    input_text = st.text_input("Mitadru's Bot: ", "", key='input')
     return input_text
+
+#title
+st.title("SonicPulse Bot")
+#data-testid="stAppViewContainer"
 changes = '''
 <style>
 [data-testid="stAppViewContainer"]
@@ -41,16 +27,22 @@ background-size:cover;
 }
 </style>
 '''
+st.markdown(changes,unsafe_allow_html=True)
+print(st.session_state)
+if 'generate' not in st.session_state:
+    st.session_state['generate'] = []
+if 'past' not in st.session_state:
+    st.session_state['past'] = []
+#accepting user input
 user_input = get_text()
-
 if user_input:
-    output = generate_response(user_input)
-    # store the output 
+    print(user_input)
+    response = generate_response(user_input)
+    print(response)
     st.session_state.past.append(user_input)
-    st.session_state.generated.append(output)
+    st.session_state.generate.append(response)
 
-if st.session_state['generated']:
-    
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        message(st.session_state["generated"][i], key=str(i))
-        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+if st.session_state['generate']:
+    for i in range(len(st.session_state['generate'])-1,-1,-1):
+        message(st.session_state['past'][i], key="user_" + str(i), is_user=True)
+        message(st.session_state['generate'][i],key=str(i))
