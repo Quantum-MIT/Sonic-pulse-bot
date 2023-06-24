@@ -1,12 +1,28 @@
 import streamlit as st
 from streamlit_chat import message
 from bardapi import Bard
+import os
+import requests
+os.environ['_BARD_API_KEY'] = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
+# token='xxxxxxx'
+
+session = requests.Session()
+session.headers = {
+            "Host": "bard.google.com",
+            "X-Same-Domain": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "Origin": "https://bard.google.com",
+            "Referer": "https://bard.google.com/",
+        }
+session.cookies.set("__Secure-1PSID", os.getenv("_BARD_API_KEY")) 
+# session.cookies.set("__Secure-1PSID", token) 
 
 
 #functions to generate output XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.
 def generate_response(prompt):
     token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
-    bard = Bard(token=token)
+    bard = Bard(token=token, session=session, timeout=30)
     response = bard.get_answer(prompt)['content']
     return response
 
