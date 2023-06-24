@@ -1,4 +1,4 @@
-# Sonic-pulse-bot
+# Sonic-pulse-bot (gpt 3.5 powered)
 
 #installation procedure:
 #navigate to the same directory as the requirements file
