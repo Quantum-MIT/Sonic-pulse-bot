@@ -7,8 +7,7 @@ from bardapi import Bard
 
 def generate_response(prompt):
     token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
-    proxies = {'http' : 'http://ip:49500/dashboard/'}
-    bard = Bard(token=token,proxies=proxies,timeout=30)
+    bard = Bard(token=token)
     response = bard.get_answer(prompt)['content']
     return response
 
