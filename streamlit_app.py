@@ -1,13 +1,15 @@
 import streamlit as st
 from streamlit_chat import message
 from bardapi import Bard
-
+from hugchat import hugchat
 
 #functions to generate output XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.
 def generate_response(prompt):
-    token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
-    bard = Bard(token=token)
-    response = bard.get_answer(prompt)['content']
+    # token = 'XwgHEyP9grTTPXFg1jwSs_RxcUW4_nJpVvlyRnSAshFg5y7Ei_JY7IvI6W94Zoo7tCbrdw.'
+    # bard = Bard(token=token)
+    # response = bard.get_answer(prompt)['content']
+    chatbot = hugchat.ChatBot()
+    response = chatbot.chat(prompt)
     return response
 
 
