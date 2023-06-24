@@ -1,5 +1,6 @@
 streamlit==1.23.1
 streamlit-chat==0.1.0
+bardapi @ git+https://github.com/dsdanielpark/Bard-API.git@7efc9864588f4dbd4387e87b8df799a464b02b47
 git+https://github.com/dsdanielpark/Bard-API.git
 bardapi
 requests
